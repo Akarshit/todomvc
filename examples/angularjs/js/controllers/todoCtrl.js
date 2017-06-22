@@ -31,7 +31,8 @@ angular.module('todomvc')
 		$scope.addTodo = function () {
 			var newTodo = {
 				title: $scope.newTodo.trim(),
-				completed: false
+				completed: false,
+				media: 'https://media.tenor.com/images/fb47a225d8f3b884203ba4f12d9aebc8/tenor.gif'
 			};
 
 			if (!newTodo.title) {
@@ -80,6 +81,7 @@ angular.module('todomvc')
 			store[todo.title ? 'put' : 'delete'](todo)
 				.then(function success() {}, function error() {
 					todo.title = $scope.originalTodo.title;
+					todo.media = $scope.originalTodo.media;
 				})
 				.finally(function () {
 					$scope.editedTodo = null;
