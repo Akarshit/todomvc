@@ -151,6 +151,8 @@ angular.module('todomvc')
 
 			put: function (todo, index) {
 				var deferred = $q.defer();
+				// So that a item that was removed before the image was fetched
+				// is not added again.
 				const found = store.todos.indexOf(todo);
 				if (found !== -1) {
 					store.todos[found] = todo;

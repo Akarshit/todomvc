@@ -11,7 +11,7 @@ angular.module('todomvc')
 
 		return function (scope, elem, attrs) {
             scope.$watch(attrs.todoGif, function (media) {
-                if (!media || media === '' || media === 'null') {
+                if (!media || media === '') {
                     elem.attr('src', loadingGif)    
                 } else {
                     elem.attr('src', media)

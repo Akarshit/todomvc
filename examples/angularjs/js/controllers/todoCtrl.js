@@ -41,10 +41,12 @@ angular.module('todomvc')
 			}
 			$scope.saving = true;
 
+			// Saving the todo.
 			store.insert(newTodo)
 			.then(function success(todos) {
 				$scope.newTodo = '';
 				const index = todos.length - 1;
+				// fetching the gif and then saving the todo again.
 				gifFetch.get(newTodo.title)
 				.then(function (url) {
 					newTodo.media = url;
@@ -86,11 +88,12 @@ angular.module('todomvc')
 				$scope.editedTodo = null;
 				return;
 			}
-
+			// Saving the todo.
 			todo.media = null;
 			store[todo.title ? 'put' : 'delete'](todo)
 			.then((todos) => {
 				if (todo.title) {
+					// fetching the gif and then saving the todo again.
 					var index = todos.length - 1;
 					gifFetch.get(todo.title)
 					.then(function (url) {
