@@ -6,6 +6,8 @@
  * @type {angular.Module}
  */
 angular.module('todomvc', ['ngRoute', 'ngResource'])
+	.constant('_', window._)
+	.constant('nlp', window.nlp)
 	.config(function ($routeProvider) {
 		'use strict';
 
@@ -19,7 +21,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 						module.get(); // Fetch the todo records in the background.
 						return module;
 					});
-				}
+				},
 			}
 		};
 

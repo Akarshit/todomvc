@@ -6,8 +6,9 @@
  * - exposes the model to the template and provides event handlers
  */
 angular.module('todomvc')
-	.controller('TodoCtrl', function TodoCtrl($scope, $routeParams, $filter, store) {
+	.controller('TodoCtrl', function TodoCtrl($scope, $routeParams, $filter, store, gifFetch) {
 		'use strict';
+		var defaultGif = 'images/loader.gif';
 
 		var todos = $scope.todos = store.todos;
 
@@ -32,21 +33,29 @@ angular.module('todomvc')
 			var newTodo = {
 				title: $scope.newTodo.trim(),
 				completed: false,
-				media: 'https://media.tenor.com/images/fb47a225d8f3b884203ba4f12d9aebc8/tenor.gif'
+				media: null,
 			};
 
 			if (!newTodo.title) {
 				return;
 			}
-
 			$scope.saving = true;
+
 			store.insert(newTodo)
-				.then(function success() {
-					$scope.newTodo = '';
+			.then(function success(todos) {
+				$scope.newTodo = '';
+				const index = todos.length - 1;
+				gifFetch.get(newTodo.title)
+				.then(function (url) {
+					newTodo.media = url;
+					return store.put(newTodo, index);
 				})
-				.finally(function () {
-					$scope.saving = false;
+				.then(function () {}, function (err) {
 				});
+			})
+			.finally(function () {
+				$scope.saving = false;
+			});
 		};
 
 		$scope.editTodo = function (todo) {
@@ -78,14 +87,29 @@ angular.module('todomvc')
 				return;
 			}
 
+			todo.media = null;
 			store[todo.title ? 'put' : 'delete'](todo)
-				.then(function success() {}, function error() {
-					todo.title = $scope.originalTodo.title;
-					todo.media = $scope.originalTodo.media;
-				})
-				.finally(function () {
-					$scope.editedTodo = null;
-				});
+			.then((todos) => {
+				if (todo.title) {
+					var index = todos.length - 1;
+					gifFetch.get(todo.title)
+					.then(function (url) {
+						todo.media = url;
+						return store.put(todo, index);
+					})
+					.then(function () {}, function (err) {
+						// console.log(err);
+					});
+				}
+			})
+			.then(function success() {}, function error() {
+				todo.title = $scope.originalTodo.title;
+				todo.media = $scope.originalTodo.media;
+			})
+			.finally(function () {
+				$scope.editedTodo = null;
+			});
+
 		};
 
 		$scope.revertEdits = function (todo) {

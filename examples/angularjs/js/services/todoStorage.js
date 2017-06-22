@@ -151,8 +151,10 @@ angular.module('todomvc')
 
 			put: function (todo, index) {
 				var deferred = $q.defer();
-
-				store.todos[index] = todo;
+				const found = store.todos.indexOf(todo);
+				if (found !== -1) {
+					store.todos[found] = todo;
+				}
 
 				store._saveToLocalStorage(store.todos);
 				deferred.resolve(store.todos);
